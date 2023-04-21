@@ -60,4 +60,9 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+
+    implementation 'androidx.camera:camera-core:1.1.0-alpha10'
+    implementation 'androidx.camera:camera-lifecycle:1.1.0-alpha10'
+    implementation 'androidx.camera:camera-video:1.1.0-alpha10'
+    implementation 'androidx.camera:camera-view:1.1.0-alpha10'
 }
