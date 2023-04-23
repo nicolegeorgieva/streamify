@@ -8,18 +8,16 @@ import androidx.camera.video.Recording
 import androidx.camera.video.VideoCapture
 import androidx.camera.video.VideoRecordEvent
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.lifecycleScope
@@ -70,7 +68,11 @@ fun VideoCaptureScreen(
     }
     PermissionsRequired(
         multiplePermissionsState = permissionState,
-        permissionsNotGrantedContent = { /* ... */ },
+        permissionsNotGrantedContent = {
+            NotGrantedPermissionsScreen {
+                permissionState.launchMultiplePermissionRequest()
+            }
+        },
         permissionsNotAvailableContent = { /* ... */ }
     ) {
         Box(
@@ -165,6 +167,45 @@ fun VideoCaptureScreen(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun NotGrantedPermissionsScreen(onRequestPermissions: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            painter = painterResource(android.R.drawable.stat_sys_warning),
+            contentDescription = "Permissions Needed",
+            modifier = Modifier.size(120.dp),
+            tint = MaterialTheme.colors.error
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "We need access to your camera and microphone to record videos",
+            style = MaterialTheme.typography.h6,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = onRequestPermissions,
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "Ask for permissions",
+                color = Color.White,
+                style = MaterialTheme.typography.button
+            )
         }
     }
 }
