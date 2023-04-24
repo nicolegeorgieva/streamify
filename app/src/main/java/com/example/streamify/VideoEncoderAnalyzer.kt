@@ -105,22 +105,27 @@ class VideoEncoderAnalyzer : ImageAnalysis.Analyzer {
     }
 
     private fun encodeFrame(input: ByteBuffer) {
-        val bufferIndex = mediaCodec?.dequeueInputBuffer(1000) ?: -1
-
+        val bufferIndex = mediaCodec?.dequeueInputBuffer(10000) ?: -1
         Log.i("ddq", "bufferIndex: $bufferIndex")
 
         if (bufferIndex >= 0) {
             val inputBuffer = mediaCodec?.getInputBuffer(bufferIndex)
-            if (inputBuffer != null && inputBuffer.remaining() >= input.remaining()) {
-                inputBuffer.put(input)
-                mediaCodec?.queueInputBuffer(
-                    bufferIndex,
-                    0,
-                    inputBuffer.remaining(),
-                    System.nanoTime() / 1000, // presentationTimeUs
-                    0
-                )
+            inputBuffer?.clear()
+
+            val bytesToCopy = minOf(inputBuffer?.remaining() ?: 0, input.remaining())
+            if (bytesToCopy > 0) {
+                val tempBuffer = ByteArray(bytesToCopy)
+                input.get(tempBuffer)
+                inputBuffer?.put(tempBuffer)
             }
+
+            mediaCodec?.queueInputBuffer(
+                bufferIndex,
+                0,
+                bytesToCopy,
+                System.nanoTime() / 1000, // presentationTimeUs
+                0
+            )
         }
 
         val bufferInfo = MediaCodec.BufferInfo()
@@ -143,7 +148,6 @@ class VideoEncoderAnalyzer : ImageAnalysis.Analyzer {
             outputBufferIndex = mediaCodec?.dequeueOutputBuffer(bufferInfo, 0) ?: -1
         }
     }
-
 
     fun release() {
         mediaCodec?.stop()
