@@ -143,7 +143,8 @@ fun createVideoCaptureUseCase(
         videoCapture.value = context.createVideoCaptureUseCase(
             lifecycleOwner = lifecycleOwner,
             cameraSelector = cameraSelector.value,
-            previewView = previewView
+            previewView = previewView,
+            analyzer = VideoEncoderAnalyzer()
         )
     }
 }
@@ -279,7 +280,8 @@ suspend fun switchCamera(context: Context, lifecycleOwner: LifecycleOwner, state
     states.videoCapture.value = context.createVideoCaptureUseCase(
         lifecycleOwner = lifecycleOwner,
         cameraSelector = states.cameraSelector.value,
-        previewView = states.previewView
+        previewView = states.previewView,
+        analyzer = VideoEncoderAnalyzer()
     )
 }
 

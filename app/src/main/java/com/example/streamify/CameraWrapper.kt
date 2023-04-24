@@ -3,6 +3,7 @@ package com.example.streamify
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.video.*
@@ -56,7 +57,8 @@ suspend fun Context.bindUseCases(
     lifecycleOwner: LifecycleOwner,
     cameraSelector: CameraSelector,
     preview: Preview,
-    videoCapture: VideoCapture<Recorder>
+    videoCapture: VideoCapture<Recorder>,
+    imageAnalysis: ImageAnalysis
 ) {
     val cameraProvider = getCameraProvider()
     cameraProvider.unbindAll()
@@ -64,7 +66,8 @@ suspend fun Context.bindUseCases(
         lifecycleOwner,
         cameraSelector,
         preview,
-        videoCapture
+        videoCapture,
+        imageAnalysis,
     )
 }
 
@@ -72,15 +75,18 @@ suspend fun Context.bindUseCases(
 suspend fun Context.createVideoCaptureUseCase(
     lifecycleOwner: LifecycleOwner,
     cameraSelector: CameraSelector,
-    previewView: PreviewView
+    previewView: PreviewView,
+    analyzer: ImageAnalysis.Analyzer
 ): VideoCapture<Recorder> {
     val mainExecutor = ContextCompat.getMainExecutor(this) // Get main executor from the context
     val preview = createPreview(previewView)
     val qualitySelector = createQualitySelector()
     val recorder = createRecorder(mainExecutor, qualitySelector)
     val videoCapture = createVideoCapture(recorder)
+    val imageAnalysis = createImageAnalysis(this, analyzer)
 
-    bindUseCases(lifecycleOwner, cameraSelector, preview, videoCapture)
+
+    bindUseCases(lifecycleOwner, cameraSelector, preview, videoCapture, imageAnalysis)
 
     return videoCapture
 }
@@ -116,4 +122,14 @@ fun startRecordingVideo(
     return recording.apply { if (audioEnabled) withAudioEnabled() }
         .start(executor, consumer)
 }
+
+
+fun createImageAnalysis(
+    context: Context,
+    analyzer: ImageAnalysis.Analyzer
+): ImageAnalysis =
+    ImageAnalysis.Builder()
+        .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+        .build()
+        .apply { setAnalyzer(ContextCompat.getMainExecutor(context), analyzer) }
 

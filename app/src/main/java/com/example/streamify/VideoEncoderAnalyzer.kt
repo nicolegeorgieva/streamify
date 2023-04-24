@@ -4,14 +4,11 @@ import android.media.Image
 import android.media.MediaCodec
 import android.media.MediaCodecInfo
 import android.media.MediaFormat
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import java.nio.ByteBuffer
 
-@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 class VideoEncoderAnalyzer : ImageAnalysis.Analyzer {
 
     private var mediaCodec: MediaCodec? = null
