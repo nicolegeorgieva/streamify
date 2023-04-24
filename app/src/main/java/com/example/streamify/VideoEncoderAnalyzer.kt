@@ -129,8 +129,13 @@ class VideoEncoderAnalyzer : ImageAnalysis.Analyzer {
         while (outputBufferIndex >= 0) {
             val encodedData = mediaCodec?.getOutputBuffer(outputBufferIndex)
 
-            // Here, you need to send the encodedData to the RTMP server.
-            // You can use a networking library like ExoPlayer or Netty for this purpose.
+
+            // Send the encodedData to the RTMP server using RtmpClient
+            if (encodedData != null && bufferInfo.size > 0) {
+                val frameData = ByteArray(bufferInfo.size)
+                encodedData.get(frameData)
+                rtmpClient.sendVideo(ByteBuffer.wrap(frameData), bufferInfo)
+            }
 
             mediaCodec?.releaseOutputBuffer(outputBufferIndex, false)
             outputBufferIndex = mediaCodec?.dequeueOutputBuffer(bufferInfo, 0) ?: -1

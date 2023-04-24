@@ -72,4 +72,6 @@ dependencies {
 
     //ExoPlayer Library
     implementation "com.google.android.exoplayer:exoplayer:$exoPlayerVersion"
+
+    implementation 'com.github.pedroSG94:rtmp-rtsp-stream-client-java:2.2.4'
 }
