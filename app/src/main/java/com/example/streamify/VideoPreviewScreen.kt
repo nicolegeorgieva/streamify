@@ -12,6 +12,10 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.ui.StyledPlayerView
 
+/**
+ * A screen that shows a preview of a video.
+ * @param uri The URI of the video to preview.
+ */
 @Composable
 fun VideoPreviewScreen(
     uri: String
