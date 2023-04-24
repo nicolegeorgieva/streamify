@@ -61,9 +61,49 @@ class VideoEncoderAnalyzer : ImageAnalysis.Analyzer {
     }
 
     private fun getYUV420Planar(image: Image): ByteBuffer {
-        // Convert YUV_420_888 to YUV_420P (I420)
-        // Code implementation here
-        TODO()
+        val yPlane = image.planes[0]
+        val uPlane = image.planes[1]
+        val vPlane = image.planes[2]
+
+        val yBuffer = yPlane.buffer
+        val uBuffer = uPlane.buffer
+        val vBuffer = vPlane.buffer
+
+        val ySize = yBuffer.remaining()
+        val uSize = uBuffer.remaining()
+        val vSize = vBuffer.remaining()
+
+        val yuvBytes = ByteArray(ySize + uSize + vSize)
+
+        yBuffer.get(yuvBytes, 0, ySize)
+
+        val chromaSize = uSize + vSize
+        val chromaWidth = image.width / 2
+        val chromaHeight = image.height / 2
+
+        for (j in 0 until chromaHeight) {
+            for (i in 0 until chromaWidth) {
+                yuvBytes[ySize + j * chromaWidth + i] = uBuffer.get()
+                uBuffer.position(uBuffer.position() + uPlane.pixelStride - 1)
+
+                yuvBytes[ySize + chromaSize / 2 + j * chromaWidth + i] = vBuffer.get()
+                vBuffer.position(vBuffer.position() + vPlane.pixelStride - 1)
+            }
+            if (j < chromaHeight - 1) {
+                uBuffer.position(
+                    uBuffer.position() -
+                            chromaWidth * (uPlane.pixelStride - 1) + uPlane.rowStride -
+                            chromaWidth * uPlane.pixelStride
+                )
+                vBuffer.position(
+                    vBuffer.position() -
+                            chromaWidth * (vPlane.pixelStride - 1) + vPlane.rowStride -
+                            chromaWidth * vPlane.pixelStride
+                )
+            }
+        }
+
+        return ByteBuffer.wrap(yuvBytes)
     }
 
     private fun encodeFrame(inputBuffer: ByteBuffer) {
