@@ -33,6 +33,8 @@ import java.io.File
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
+val analyzer = VideoEncoderAnalyzer()
+
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun VideoCaptureScreen(
@@ -144,7 +146,7 @@ fun createVideoCaptureUseCase(
             lifecycleOwner = lifecycleOwner,
             cameraSelector = cameraSelector.value,
             previewView = previewView,
-            analyzer = VideoEncoderAnalyzer()
+            analyzer = analyzer,
         )
     }
 }
@@ -281,7 +283,7 @@ suspend fun switchCamera(context: Context, lifecycleOwner: LifecycleOwner, state
         lifecycleOwner = lifecycleOwner,
         cameraSelector = states.cameraSelector.value,
         previewView = states.previewView,
-        analyzer = VideoEncoderAnalyzer()
+        analyzer = analyzer,
     )
 }
 
