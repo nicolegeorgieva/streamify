@@ -4,6 +4,8 @@ package com.example.streamify
 import com.pedro.rtmp.rtmp.RtmpClient
 import com.pedro.rtmp.utils.ConnectCheckerRtmp
 
+private const val STREAMING_URL = ""
+
 val rtmpClient = RtmpClient(object : ConnectCheckerRtmp {
     override fun onAuthErrorRtmp() {
     }
@@ -27,10 +29,10 @@ val rtmpClient = RtmpClient(object : ConnectCheckerRtmp {
     }
 })
 
-private fun startStreaming(url: String) {
-    rtmpClient.connect(url)
+fun startStreaming() {
+    rtmpClient.connect(STREAMING_URL)
 }
 
-private fun stopStreaming() {
+fun stopStreaming() {
     rtmpClient.disconnect()
 }

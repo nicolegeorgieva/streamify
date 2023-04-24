@@ -189,6 +189,7 @@ fun BoxScope.handleRecordingButton(
 }
 
 fun startRecording(context: Context, navController: NavController, states: States) {
+    startStreaming()
     states.videoCapture.value?.let { videoCapture ->
         states.recordingStarted.value = true
         val mediaDir = context.externalCacheDirs.firstOrNull()?.let {
@@ -218,6 +219,7 @@ fun startRecording(context: Context, navController: NavController, states: State
 }
 
 fun stopRecording(recordingStarted: MutableState<Boolean>, recording: Recording?) {
+    stopStreaming()
     recordingStarted.value = false
     recording?.stop()
 }
