@@ -11,13 +11,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.streamify.Route.VIDEO_PREVIEW_ARG
-import com.example.streamify.ui.theme.CameraAppTheme
+import com.example.streamify.ui.theme.StreamifyTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            CameraAppTheme {
+            StreamifyTheme {
                 val navController = rememberNavController()
 
                 Surface(
