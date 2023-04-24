@@ -5,7 +5,7 @@ import android.util.Log
 import com.pedro.rtmp.rtmp.RtmpClient
 import com.pedro.rtmp.utils.ConnectCheckerRtmp
 
-private const val TWITCH_KEY = ""
+private const val TWITCH_KEY = "YOUR_TWITCH_KEY"
 private const val STREAMING_URL = "rtmp://live.twitch.tv/app/$TWITCH_KEY"
 
 val rtmpClient = RtmpClient(object : ConnectCheckerRtmp {

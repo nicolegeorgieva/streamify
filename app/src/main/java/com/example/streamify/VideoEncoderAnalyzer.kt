@@ -4,6 +4,7 @@ import android.media.Image
 import android.media.MediaCodec
 import android.media.MediaCodecInfo
 import android.media.MediaFormat
+import android.util.Log
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
@@ -46,9 +47,9 @@ class VideoEncoderAnalyzer : ImageAnalysis.Analyzer {
                     MediaFormat.KEY_COLOR_FORMAT,
                     MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Flexible
                 )
-                setInteger(MediaFormat.KEY_BIT_RATE, 2000 * 1000) // 2Mbps
+                setInteger(MediaFormat.KEY_BIT_RATE, 2500 * 1000) // 2.5 Mbps
                 setInteger(MediaFormat.KEY_FRAME_RATE, 30)
-                setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1) // 1 second
+                setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 2) // 2 second
             }
 
         mediaCodec?.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE)
@@ -105,6 +106,9 @@ class VideoEncoderAnalyzer : ImageAnalysis.Analyzer {
 
     private fun encodeFrame(input: ByteBuffer) {
         val bufferIndex = mediaCodec?.dequeueInputBuffer(1000) ?: -1
+
+        Log.i("ddq", "bufferIndex: $bufferIndex")
+
         if (bufferIndex >= 0) {
             val inputBuffer = mediaCodec?.getInputBuffer(bufferIndex)
             if (inputBuffer != null && inputBuffer.remaining() >= input.remaining()) {
@@ -122,9 +126,12 @@ class VideoEncoderAnalyzer : ImageAnalysis.Analyzer {
         val bufferInfo = MediaCodec.BufferInfo()
         var outputBufferIndex = mediaCodec?.dequeueOutputBuffer(bufferInfo, 0) ?: -1
 
+        Log.i("ddq", "outputBufferIndex: $outputBufferIndex")
+
         while (outputBufferIndex >= 0) {
             val encodedData = mediaCodec?.getOutputBuffer(outputBufferIndex)
 
+            Log.i("ddq", "Encoded data: $encodedData")
             // Send the encodedData to the RTMP server using RtmpClient
             if (encodedData != null && bufferInfo.size > 0) {
                 val frameData = ByteArray(bufferInfo.size)
