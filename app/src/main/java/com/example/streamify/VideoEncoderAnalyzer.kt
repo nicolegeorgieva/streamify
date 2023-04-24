@@ -103,13 +103,12 @@ class VideoEncoderAnalyzer : ImageAnalysis.Analyzer {
         return ByteBuffer.wrap(yuvBytes)
     }
 
-    private fun encodeFrame(inputBuffer: ByteBuffer) {
+    private fun encodeFrame(input: ByteBuffer) {
         val bufferIndex = mediaCodec?.dequeueInputBuffer(1000) ?: -1
         if (bufferIndex >= 0) {
             val inputBuffer = mediaCodec?.getInputBuffer(bufferIndex)
-            inputBuffer?.put(inputBuffer)
-
-            if (inputBuffer != null) {
+            if (inputBuffer != null && inputBuffer.remaining() >= input.remaining()) {
+                inputBuffer.put(input)
                 mediaCodec?.queueInputBuffer(
                     bufferIndex,
                     0,
@@ -126,7 +125,6 @@ class VideoEncoderAnalyzer : ImageAnalysis.Analyzer {
         while (outputBufferIndex >= 0) {
             val encodedData = mediaCodec?.getOutputBuffer(outputBufferIndex)
 
-
             // Send the encodedData to the RTMP server using RtmpClient
             if (encodedData != null && bufferInfo.size > 0) {
                 val frameData = ByteArray(bufferInfo.size)
@@ -138,6 +136,7 @@ class VideoEncoderAnalyzer : ImageAnalysis.Analyzer {
             outputBufferIndex = mediaCodec?.dequeueOutputBuffer(bufferInfo, 0) ?: -1
         }
     }
+
 
     fun release() {
         mediaCodec?.stop()
