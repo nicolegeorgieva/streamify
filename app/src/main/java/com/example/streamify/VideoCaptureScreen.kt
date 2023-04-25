@@ -38,7 +38,7 @@ import java.io.File
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
-val analyzer = VideoEncoderAnalyzer()
+val streamingAnalyzer = RtmpStreamingAnalyzer(rtmpClient)
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -91,9 +91,11 @@ fun VideoCaptureScreen(
             HandleCameraSwitchButton(context, lifecycleOwner, states, states.recordingStarted)
 
             if (streamingStarted) {
-                Box(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                ) {
                     LiveStreamingIndicator(modifier = Modifier.align(Alignment.TopEnd))
                 }
             }
@@ -161,7 +163,7 @@ fun CreateVideoCaptureUseCase(
             lifecycleOwner = lifecycleOwner,
             cameraSelector = cameraSelector.value,
             previewView = previewView,
-            analyzer = analyzer,
+            analyzer = streamingAnalyzer,
         )
     }
 }
@@ -245,7 +247,6 @@ fun startRecording(
 }
 
 fun stopRecording(recordingStarted: MutableState<Boolean>, recording: Recording?) {
-    analyzer.release()
     stopStreaming()
     recordingStarted.value = false
     recording?.stop()
@@ -334,7 +335,7 @@ suspend fun switchCamera(context: Context, lifecycleOwner: LifecycleOwner, state
         lifecycleOwner = lifecycleOwner,
         cameraSelector = states.cameraSelector.value,
         previewView = states.previewView,
-        analyzer = analyzer,
+        analyzer = streamingAnalyzer,
     )
 }
 

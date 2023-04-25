@@ -8,8 +8,7 @@ import androidx.compose.runtime.setValue
 import com.pedro.rtmp.rtmp.RtmpClient
 import com.pedro.rtmp.utils.ConnectCheckerRtmp
 
-private const val TWITCH_KEY = "YOUR_TWITCH_KEY"
-private const val STREAMING_URL = "rtmp://live.twitch.tv/app/$TWITCH_KEY"
+private const val STREAMING_URL = "rtmp://a.rtmp.youtube.com/live2/"
 
 var streamingStarted by mutableStateOf(false)
 
