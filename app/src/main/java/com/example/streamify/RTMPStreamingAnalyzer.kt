@@ -17,7 +17,6 @@ class RtmpStreamingAnalyzer(private val rtmpClient: RtmpClient) : ImageAnalysis.
         encoder.start()
     }
 
-
     private fun configureEncoder(width: Int, height: Int): MediaCodec {
         val codecName = "video/avc"
         val codec = MediaCodec.createEncoderByType(codecName)
@@ -25,16 +24,18 @@ class RtmpStreamingAnalyzer(private val rtmpClient: RtmpClient) : ImageAnalysis.
         val format = MediaFormat.createVideoFormat(codecName, width, height)
         format.setInteger(
             MediaFormat.KEY_COLOR_FORMAT,
-            MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Flexible
+            MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface
         )
-        format.setInteger(MediaFormat.KEY_BIT_RATE, 1200 * 1024)
-        format.setInteger(MediaFormat.KEY_FRAME_RATE, 30)
-        format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 2)
+        format.setInteger(MediaFormat.KEY_BIT_RATE, 4000000) // Adjust bitrate as needed
+        format.setInteger(MediaFormat.KEY_FRAME_RATE, 30) // Adjust frame rate as needed
+        format.setInteger(
+            MediaFormat.KEY_I_FRAME_INTERVAL,
+            2
+        ) // Adjust key frame interval as needed
 
         codec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE)
         return codec
     }
-
 
     override fun analyze(image: ImageProxy) {
         if (rtmpClient.isStreaming) {
@@ -59,34 +60,23 @@ class RtmpStreamingAnalyzer(private val rtmpClient: RtmpClient) : ImageAnalysis.
 
             val bufferInfo = MediaCodec.BufferInfo()
             var outputIndex = encoder.dequeueOutputBuffer(bufferInfo, 10000)
+
             while (outputIndex >= 0) {
                 val outputBuffer = encoder.getOutputBuffer(outputIndex)
                 outputBuffer?.position(bufferInfo.offset)
                 outputBuffer?.limit(bufferInfo.offset + bufferInfo.size)
 
-                if (bufferInfo.flags and MediaCodec.BUFFER_FLAG_CODEC_CONFIG != 0) {
-                    // Extract and send SPS and PPS
-                    val csd = ByteArray(bufferInfo.size + 4)
-                    outputBuffer?.get(csd, 4, bufferInfo.size)
-                    csd[0] = 0x00
-                    csd[1] = 0x00
-                    csd[2] = 0x00
-                    csd[3] = 0x01
-                    rtmpClient.sendVideo(ByteBuffer.wrap(csd), bufferInfo)
-                } else {
-                    // Send the encoded video frame
-                    val dataSize = bufferInfo.size + 4
-                    val dataWithStartCode = ByteArray(dataSize)
-                    dataWithStartCode[0] = 0x00
-                    dataWithStartCode[1] = 0x00
-                    dataWithStartCode[2] = 0x00
-                    dataWithStartCode[3] = 0x01
-                    outputBuffer?.get(dataWithStartCode, 4, bufferInfo.size)
-                    rtmpClient.sendVideo(ByteBuffer.wrap(dataWithStartCode), bufferInfo)
-                }
+                val dataSize = bufferInfo.size + 4
+                val dataWithStartCode = ByteArray(dataSize)
+                dataWithStartCode[0] = 0x00
+                dataWithStartCode[1] = 0x00
+                dataWithStartCode[2] = 0x00
+                dataWithStartCode[3] = 0x01
+                outputBuffer?.get(dataWithStartCode, 4, bufferInfo.size)
+                rtmpClient.sendVideo(ByteBuffer.wrap(dataWithStartCode), bufferInfo)
 
                 encoder.releaseOutputBuffer(outputIndex, false)
-                outputIndex = encoder.dequeueOutputBuffer(bufferInfo, 0)
+                outputIndex = encoder.dequeueOutputBuffer(bufferInfo, 10000)
             }
         }
         image.close()
@@ -127,3 +117,4 @@ class RtmpStreamingAnalyzer(private val rtmpClient: RtmpClient) : ImageAnalysis.
     }
 
 }
+
