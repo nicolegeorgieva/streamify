@@ -384,9 +384,10 @@ fun PermissionsNotAvailableScreen() {
                 ).forEach { stepText ->
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
+                        modifier = Modifier.align(Alignment.Start),
                         text = stepText,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.align(Alignment.Start)
+                        color = MaterialTheme.colors.onSecondary
                     )
                 }
             }
