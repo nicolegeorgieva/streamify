@@ -66,12 +66,23 @@ class RtmpStreamingAnalyzer(private val rtmpClient: RtmpClient) : ImageAnalysis.
 
                 if (bufferInfo.flags and MediaCodec.BUFFER_FLAG_CODEC_CONFIG != 0) {
                     // Extract and send SPS and PPS
-                    val csd = ByteArray(bufferInfo.size)
-                    outputBuffer?.get(csd)
+                    val csd = ByteArray(bufferInfo.size + 4)
+                    outputBuffer?.get(csd, 4, bufferInfo.size)
+                    csd[0] = 0x00
+                    csd[1] = 0x00
+                    csd[2] = 0x00
+                    csd[3] = 0x01
                     rtmpClient.sendVideo(ByteBuffer.wrap(csd), bufferInfo)
                 } else {
                     // Send the encoded video frame
-                    rtmpClient.sendVideo(outputBuffer!!, bufferInfo)
+                    val dataSize = bufferInfo.size + 4
+                    val dataWithStartCode = ByteArray(dataSize)
+                    dataWithStartCode[0] = 0x00
+                    dataWithStartCode[1] = 0x00
+                    dataWithStartCode[2] = 0x00
+                    dataWithStartCode[3] = 0x01
+                    outputBuffer?.get(dataWithStartCode, 4, bufferInfo.size)
+                    rtmpClient.sendVideo(ByteBuffer.wrap(dataWithStartCode), bufferInfo)
                 }
 
                 encoder.releaseOutputBuffer(outputIndex, false)
@@ -80,6 +91,7 @@ class RtmpStreamingAnalyzer(private val rtmpClient: RtmpClient) : ImageAnalysis.
         }
         image.close()
     }
+
 
     private fun imageProxyToYUV420ByteBuffer(image: ImageProxy): ByteBuffer {
         val yBuffer = image.planes[0].buffer
@@ -94,12 +106,16 @@ class RtmpStreamingAnalyzer(private val rtmpClient: RtmpClient) : ImageAnalysis.
 
         yBuffer.get(nv21.array(), 0, ySize)
 
-        val chromaRowStride = uBuffer.remaining() / image.height
+        val chromaRowStride = image.planes[1].rowStride
+        val chromaPixelStride = image.planes[1].pixelStride
 
+        var yPos = ySize
         for (i in 0 until image.height step 2) {
-            for (j in 0 until chromaRowStride step 2) {
-                nv21.put(uBuffer.get(i * chromaRowStride + j))
-                nv21.put(vBuffer.get(i * chromaRowStride + j))
+            for (j in 0 until chromaRowStride step chromaPixelStride * 2) {
+                if (yPos + 1 < nv21.capacity() && i * chromaRowStride + j < uSize && i * chromaRowStride + j < vSize) {
+                    nv21.put(yPos++, uBuffer.get(i * chromaRowStride + j))
+                    nv21.put(yPos++, vBuffer.get(i * chromaRowStride + j))
+                }
             }
         }
 
