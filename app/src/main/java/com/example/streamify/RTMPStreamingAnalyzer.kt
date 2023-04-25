@@ -1,15 +1,11 @@
 package com.example.streamify
 
-import android.graphics.ImageFormat
-import android.graphics.Rect
-import android.graphics.YuvImage
 import android.media.MediaCodec
 import android.media.MediaCodecInfo
 import android.media.MediaFormat
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.pedro.rtmp.rtmp.RtmpClient
-import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 
 class RtmpStreamingAnalyzer(private val rtmpClient: RtmpClient) : ImageAnalysis.Analyzer {
@@ -21,43 +17,22 @@ class RtmpStreamingAnalyzer(private val rtmpClient: RtmpClient) : ImageAnalysis.
         encoder.start()
     }
 
-    private fun imageToByteArray(image: ImageProxy): ByteArray? {
-        val nv21Buffer = yuv420ThreePlanesToNV21(
-            image.planes[0].buffer,
-            image.planes[1].buffer,
-            image.planes[2].buffer,
-            image.width,
-            image.height
+
+    private fun configureEncoder(width: Int, height: Int): MediaCodec {
+        val codecName = "video/avc"
+        val codec = MediaCodec.createEncoderByType(codecName)
+
+        val format = MediaFormat.createVideoFormat(codecName, width, height)
+        format.setInteger(
+            MediaFormat.KEY_COLOR_FORMAT,
+            MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Flexible
         )
-        val yuvImage = YuvImage(nv21Buffer, ImageFormat.NV21, image.width, image.height, null)
-        val outputStream = ByteArrayOutputStream()
-        val rect = Rect(0, 0, yuvImage.width, yuvImage.height)
-        yuvImage.compressToJpeg(rect, 70, outputStream)
-        return outputStream.toByteArray()
-    }
+        format.setInteger(MediaFormat.KEY_BIT_RATE, 1200 * 1024)
+        format.setInteger(MediaFormat.KEY_FRAME_RATE, 30)
+        format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 2)
 
-    private fun yuv420ThreePlanesToNV21(
-        yBuffer: ByteBuffer,
-        uBuffer: ByteBuffer,
-        vBuffer: ByteBuffer,
-        width: Int,
-        height: Int
-    ): ByteArray {
-        val nv21 = ByteArray(width * height * 3 / 2)
-
-        yBuffer.get(nv21, 0, width * height)
-
-        val chromaRowStride = uBuffer.remaining() / height
-
-        for (i in 0 until height step 2) {
-            for (j in 0 until chromaRowStride step 2) {
-                nv21[width * height + i * chromaRowStride + j] =
-                    uBuffer.get(i * chromaRowStride + j)
-                nv21[width * height + i * chromaRowStride + j + 1] =
-                    vBuffer.get(i * chromaRowStride + j)
-            }
-        }
-        return nv21
+        codec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE)
+        return codec
     }
 
 
@@ -104,24 +79,6 @@ class RtmpStreamingAnalyzer(private val rtmpClient: RtmpClient) : ImageAnalysis.
             }
         }
         image.close()
-    }
-
-
-    private fun configureEncoder(width: Int, height: Int): MediaCodec {
-        val codecName = "video/avc"
-        val codec = MediaCodec.createEncoderByType(codecName)
-
-        val format = MediaFormat.createVideoFormat(codecName, width, height)
-        format.setInteger(
-            MediaFormat.KEY_COLOR_FORMAT,
-            MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Flexible
-        )
-        format.setInteger(MediaFormat.KEY_BIT_RATE, 1200 * 1024)
-        format.setInteger(MediaFormat.KEY_FRAME_RATE, 30)
-        format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 2)
-
-        codec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE)
-        return codec
     }
 
     private fun imageProxyToYUV420ByteBuffer(image: ImageProxy): ByteBuffer {
