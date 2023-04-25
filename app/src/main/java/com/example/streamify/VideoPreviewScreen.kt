@@ -1,18 +1,19 @@
 package com.example.streamify
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.exoplayer2.ExoPlayer
@@ -37,42 +38,34 @@ fun VideoPreviewScreen(
         }
     }
 
-    DisposableEffect(
-        Box(
+    Box(modifier = Modifier.fillMaxSize()) {
+        AndroidView(
+            factory = { context ->
+                StyledPlayerView(context).apply {
+                    player = exoPlayer
+                }
+            },
             modifier = Modifier.fillMaxSize()
+        )
+
+        IconButton(
+            onClick = onShareClick,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 8.dp, end = 16.dp)
         ) {
-            AndroidView(
-                factory = { context ->
-                    StyledPlayerView(context).apply {
-                        player = exoPlayer
-                    }
-                },
-                modifier = Modifier.fillMaxSize()
+            Icon(
+                painter = painterResource(R.drawable.baseline_share_24),
+                contentDescription = "",
+                modifier = Modifier.size(52.dp),
+                tint = MaterialTheme.colors.secondary
             )
         }
-    ) {
+    }
+
+    DisposableEffect(exoPlayer) {
         onDispose {
             exoPlayer.release()
         }
-    }
-
-    Spacer(modifier = Modifier.padding(top = 16.dp))
-
-    IconButton(
-        onClick = onShareClick
-    ) {
-        Icon(
-            painter = painterResource(R.drawable.baseline_share_24),
-            contentDescription = "",
-            modifier = Modifier.size(52.dp),
-            tint = Color.White
-        )
-    }
-
-    Button(
-        onClick = onShareClick,
-        modifier = Modifier.padding(top = 16.dp)
-    ) {
-        Text(text = stringResource(id = R.string.share_video))
     }
 }
