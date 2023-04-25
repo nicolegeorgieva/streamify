@@ -1,5 +1,6 @@
 package com.example.streamify
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -34,7 +36,10 @@ class MainActivity : ComponentActivity() {
 
                         composable(Route.VIDEO_PREVIEW_FULL_ROUTE) {
                             val uri = it.arguments?.getString(VIDEO_PREVIEW_ARG) ?: ""
-                            VideoPreviewScreen(uri = uri)
+                            val context = LocalContext.current
+                            VideoPreviewScreen(uri = uri, onShareClick = {
+                                createShareIntent(context, Uri.parse(uri))
+                            })
                         }
                     }
                 }
