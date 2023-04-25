@@ -1,4 +1,16 @@
 <resources>
     <string name="app_name">Streamify</string>
     <string name="share_video">Share video</string>
+    <string name="permissions_needed_title">Permissions Needed</string>
+    <string name="permissions_needed_message">We need access to your camera and microphone to record videos</string>
+    <string name="ask_for_permissions_button">Ask for permissions</string>
+    <string name="permissions_not_available_title">Permissions Not Available</string>
+    <string name="permissions_not_available_message">This app requires certain permissions to function properly. Please grant the necessary permissions in the app settings.</string>
+    <string name="grant_permissions_step_1">1. Long tap the app icon</string>
+    <string name="grant_permissions_step_2">2. Tap on App Info icon on the resulting popup</string>
+    <string name="grant_permissions_step_3">3. Tap on Permissions</string>
+    <string name="grant_permissions_step_4">4. Grant Camera and Microphone permissions</string>
+    <string name="grant_permissions_step_5">5. Restart the app</string>
+    <string name="grant_permissions_step_6">6. Enjoy!</string>
+    <string name="live_streaming_indicator">LIVE</string>
 </resources>

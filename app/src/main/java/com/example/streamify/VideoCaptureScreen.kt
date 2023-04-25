@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -348,7 +349,7 @@ fun NotGrantedPermissionsScreen(onRequestPermissions: () -> Unit) {
     ) {
         Icon(
             painter = painterResource(android.R.drawable.stat_sys_warning),
-            contentDescription = "Permissions Needed",
+            contentDescription = stringResource(R.string.permissions_needed_title),
             modifier = Modifier.size(64.dp),
             tint = MaterialTheme.colors.error
         )
@@ -356,7 +357,7 @@ fun NotGrantedPermissionsScreen(onRequestPermissions: () -> Unit) {
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "We need access to your camera and microphone to record videos",
+            text = stringResource(R.string.permissions_needed_message),
             style = MaterialTheme.typography.h6,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
@@ -365,12 +366,12 @@ fun NotGrantedPermissionsScreen(onRequestPermissions: () -> Unit) {
 
         Button(
             onClick = onRequestPermissions,
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = "Ask for permissions",
-                color = Color.White,
+                text = stringResource(R.string.ask_for_permissions_button),
+                color = MaterialTheme.colors.onSecondary,
                 style = MaterialTheme.typography.button
             )
         }
@@ -388,7 +389,7 @@ fun PermissionsNotAvailableScreen() {
     ) {
         Icon(
             painter = painterResource(android.R.drawable.stat_sys_warning),
-            contentDescription = "Permissions Needed",
+            contentDescription = stringResource(R.string.permissions_needed_message),
             modifier = Modifier.size(64.dp),
             tint = MaterialTheme.colors.error
         )
@@ -396,7 +397,7 @@ fun PermissionsNotAvailableScreen() {
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Permissions Not Available",
+            text = stringResource(R.string.permissions_not_available_title),
             style = MaterialTheme.typography.h6,
             color = MaterialTheme.colors.error,
             textAlign = TextAlign.Center,
@@ -406,8 +407,7 @@ fun PermissionsNotAvailableScreen() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "This app requires certain permissions to function properly." +
-                    " Please grant the necessary permissions in the app settings.",
+            text = stringResource(R.string.permissions_not_available_message),
             modifier = Modifier.align(Alignment.Start)
         )
 
@@ -420,12 +420,12 @@ fun PermissionsNotAvailableScreen() {
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 listOf(
-                    "1. Long tap the app icon",
-                    "2. Tap on App Info icon on the resulting popup",
-                    "3. Tap on Permissions",
-                    "4. Grant Camera and Microphone permissions",
-                    "5. Restart the app",
-                    "6. Enjoy!"
+                    stringResource(R.string.grant_permissions_step_1),
+                    stringResource(R.string.grant_permissions_step_2),
+                    stringResource(R.string.grant_permissions_step_3),
+                    stringResource(R.string.grant_permissions_step_4),
+                    stringResource(R.string.grant_permissions_step_5),
+                    stringResource(R.string.grant_permissions_step_6)
                 ).forEach { stepText ->
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
@@ -449,7 +449,7 @@ fun LiveStreamingIndicator(modifier: Modifier = Modifier) {
             .background(Color.Red)
     ) {
         Text(
-            text = "LIVE",
+            text = stringResource(R.string.live_streaming_indicator),
             fontWeight = FontWeight.Bold,
             color = Color.White,
             modifier = Modifier.align(Alignment.Center)
