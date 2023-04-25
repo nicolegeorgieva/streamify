@@ -58,7 +58,7 @@ fun VideoPreviewScreen(
                 painter = painterResource(R.drawable.baseline_share_24),
                 contentDescription = "",
                 modifier = Modifier.size(52.dp),
-                tint = MaterialTheme.colors.secondary
+                tint = MaterialTheme.colors.primary
             )
         }
     }
