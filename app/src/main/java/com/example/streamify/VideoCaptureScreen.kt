@@ -54,7 +54,7 @@ fun VideoCaptureScreen(
     val states = initializeStates()
 
     // 3. Request permissions when the effect is launched
-    requestPermissions(permissionState)
+    RequestPermissions(permissionState)
 
     // 4. Create video capture use case when the effect is launched
     createVideoCaptureUseCase(
@@ -78,16 +78,16 @@ fun VideoCaptureScreen(
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             // 5. Show the camera preview
-            showCameraPreview(states.previewView)
+            ShowCameraPreview(states.previewView)
 
             // 6. Handle recording button
             HandleRecordingButton(context, navController, states, states.recordingStarted)
 
             // 7. Handle audio button
-            handleAudioButton(states.audioEnabled, states.recordingStarted)
+            HandleAudioButton(states.audioEnabled, states.recordingStarted)
 
             // 8. Handle camera switch button
-            handleCameraSwitchButton(context, lifecycleOwner, states, states.recordingStarted)
+            HandleCameraSwitchButton(context, lifecycleOwner, states, states.recordingStarted)
 
             if (streamingStarted) {
                 Box(modifier = Modifier
@@ -140,7 +140,7 @@ data class States(
 // 3. Request permissions when the effect is launched
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun requestPermissions(permissionState: MultiplePermissionsState) {
+fun RequestPermissions(permissionState: MultiplePermissionsState) {
     LaunchedEffect(Unit) {
         permissionState.launchMultiplePermissionRequest()
     }
@@ -167,7 +167,7 @@ fun createVideoCaptureUseCase(
 
 // 5. Show the camera preview
 @Composable
-fun BoxScope.showCameraPreview(previewView: PreviewView) {
+fun BoxScope.ShowCameraPreview(previewView: PreviewView) {
     AndroidView(
         factory = { previewView },
         modifier = Modifier.fillMaxSize()
@@ -271,7 +271,7 @@ fun createShareIntent(context: Context, uri: Uri) {
 
 // 7. Handle audio button
 @Composable
-fun BoxScope.handleAudioButton(
+fun BoxScope.HandleAudioButton(
     audioEnabled: MutableState<Boolean>,
     recordingStarted: MutableState<Boolean>
 ) {
@@ -297,7 +297,7 @@ fun BoxScope.handleAudioButton(
 
 // 8. Handle camera switch button
 @Composable
-fun BoxScope.handleCameraSwitchButton(
+fun BoxScope.HandleCameraSwitchButton(
     context: Context,
     lifecycleOwner: LifecycleOwner,
     states: States,
