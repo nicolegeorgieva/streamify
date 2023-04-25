@@ -87,6 +87,10 @@ fun VideoCaptureScreen(
 
             // 8. Handle camera switch button
             handleCameraSwitchButton(context, lifecycleOwner, states, states.recordingStarted)
+
+            if (streamingStarted) {
+                Text(text = "Live")
+            }
         }
     }
 }
