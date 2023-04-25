@@ -181,12 +181,17 @@ fun BoxScope.handleRecordingButton(
         },
         modifier = Modifier
             .align(Alignment.BottomCenter)
-            .padding(bottom = 32.dp)
+            .padding(bottom = 16.dp)
     ) {
         Icon(
-            painter = painterResource(if (recordingStarted.value) R.drawable.ic_stop else R.drawable.ic_record),
+            painter = painterResource(
+                if (recordingStarted.value) R.drawable.baseline_stop_circle_64
+                else R.drawable.baseline_fiber_manual_record_64
+            ),
             contentDescription = "",
-            modifier = Modifier.size(64.dp)
+            modifier = Modifier.size(96.dp),
+            tint = if (recordingStarted.value) Color.Red
+            else Color.White
         )
     }
 }
@@ -245,7 +250,9 @@ fun BoxScope.handleAudioButton(
             Icon(
                 painter = painterResource(if (audioEnabled.value) R.drawable.ic_mic_on else R.drawable.ic_mic_off),
                 contentDescription = "",
-                modifier = Modifier.size(64.dp)
+                modifier = Modifier.size(64.dp),
+                tint = if (audioEnabled.value) Color.White
+                else Color.Red
             )
         }
     }
@@ -273,7 +280,8 @@ fun BoxScope.handleCameraSwitchButton(
             Icon(
                 painter = painterResource(R.drawable.ic_switch_camera),
                 contentDescription = "",
-                modifier = Modifier.size(64.dp)
+                modifier = Modifier.size(64.dp),
+                tint = Color.White
             )
         }
     }
