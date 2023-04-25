@@ -235,6 +235,7 @@ fun startRecording(
 }
 
 fun stopRecording(recordingStarted: MutableState<Boolean>, recording: Recording?) {
+    analyzer.release()
     stopStreaming()
     recordingStarted.value = false
     recording?.stop()
