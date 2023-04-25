@@ -304,10 +304,11 @@ fun NotGrantedPermissionsScreen(onRequestPermissions: () -> Unit) {
         Icon(
             painter = painterResource(android.R.drawable.stat_sys_warning),
             contentDescription = "Permissions Needed",
-            modifier = Modifier.size(120.dp),
+            modifier = Modifier.size(64.dp),
             tint = MaterialTheme.colors.error
         )
-        Spacer(modifier = Modifier.height(24.dp))
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         Text(
             text = "We need access to your camera and microphone to record videos",
@@ -340,6 +341,15 @@ fun PermissionsNotAvailableScreen() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Icon(
+            painter = painterResource(android.R.drawable.stat_sys_warning),
+            contentDescription = "Permissions Needed",
+            modifier = Modifier.size(64.dp),
+            tint = MaterialTheme.colors.error
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         Text(
             text = "Permissions Not Available",
             style = MaterialTheme.typography.h6,
