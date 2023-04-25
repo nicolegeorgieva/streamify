@@ -10,6 +10,7 @@ import androidx.camera.video.Recording
 import androidx.camera.video.VideoCapture
 import androidx.camera.video.VideoRecordEvent
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -89,7 +90,11 @@ fun VideoCaptureScreen(
             handleCameraSwitchButton(context, lifecycleOwner, states, states.recordingStarted)
 
             if (streamingStarted) {
-                Text(text = "Live")
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)) {
+                    LiveStreamingIndicator(modifier = Modifier.align(Alignment.TopEnd))
+                }
             }
         }
     }
@@ -434,5 +439,25 @@ fun PermissionsNotAvailableScreen() {
         }
     }
 }
+
+@Composable
+fun LiveStreamingIndicator(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .height(32.dp)
+            .width(68.dp)
+            .background(Color.Red)
+    ) {
+        Text(
+            text = "LIVE",
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+            modifier = Modifier.align(Alignment.Center)
+        )
+    }
+}
+
+
+
 
 
