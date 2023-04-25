@@ -245,12 +245,12 @@ fun BoxScope.handleAudioButton(
             },
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .padding(bottom = 32.dp)
+                .padding(bottom = 32.dp, start = 16.dp)
         ) {
             Icon(
                 painter = painterResource(if (audioEnabled.value) R.drawable.ic_mic_on else R.drawable.ic_mic_off),
                 contentDescription = "",
-                modifier = Modifier.size(64.dp),
+                modifier = Modifier.size(52.dp),
                 tint = if (audioEnabled.value) Color.White
                 else Color.Red
             )
@@ -275,12 +275,12 @@ fun BoxScope.handleCameraSwitchButton(
             },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(bottom = 32.dp)
+                .padding(bottom = 32.dp, end = 16.dp)
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_switch_camera),
                 contentDescription = "",
-                modifier = Modifier.size(64.dp),
+                modifier = Modifier.size(52.dp),
                 tint = Color.White
             )
         }
