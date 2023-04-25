@@ -2,6 +2,7 @@ package com.example.streamify
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import androidx.camera.core.CameraSelector
 import androidx.camera.video.Recorder
@@ -78,7 +79,7 @@ fun VideoCaptureScreen(
             showCameraPreview(states.previewView)
 
             // 6. Handle recording button
-            handleRecordingButton(context, navController, states, states.recordingStarted)
+            HandleRecordingButton(context, navController, states, states.recordingStarted)
 
             // 7. Handle audio button
             handleAudioButton(states.audioEnabled, states.recordingStarted)
@@ -165,7 +166,7 @@ fun BoxScope.showCameraPreview(previewView: PreviewView) {
 
 // 6. Handle recording button
 @Composable
-fun BoxScope.handleRecordingButton(
+fun BoxScope.HandleRecordingButton(
     context: Context,
     navController: NavController,
     states: States,
@@ -230,6 +231,20 @@ fun stopRecording(recordingStarted: MutableState<Boolean>, recording: Recording?
     stopStreaming()
     recordingStarted.value = false
     recording?.stop()
+}
+
+fun createShareIntent(context: Context, uri: Uri) {
+    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+        type = "video/*"
+        putExtra(Intent.EXTRA_STREAM, uri)
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+    context.startActivity(
+        Intent.createChooser(
+            shareIntent,
+            context.getString(R.string.share_video)
+        )
+    )
 }
 
 // 7. Handle audio button
