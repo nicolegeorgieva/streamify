@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -68,7 +69,9 @@ fun VideoCaptureScreen(
                 permissionState.launchMultiplePermissionRequest()
             }
         },
-        permissionsNotAvailableContent = { /* ... */ }
+        permissionsNotAvailableContent = {
+            PermissionsNotAvailableScreen()
+        }
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             // 5. Show the camera preview
@@ -327,3 +330,58 @@ fun NotGrantedPermissionsScreen(onRequestPermissions: () -> Unit) {
         }
     }
 }
+
+@Composable
+fun PermissionsNotAvailableScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Permissions Not Available",
+            style = MaterialTheme.typography.h6,
+            color = MaterialTheme.colors.error,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "This app requires certain permissions to function properly." +
+                    " Please grant the necessary permissions in the app settings.",
+            modifier = Modifier.align(Alignment.Start)
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Card(
+            backgroundColor = MaterialTheme.colors.secondary,
+            elevation = 1.dp,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                listOf(
+                    "1. Long tap the app icon",
+                    "2. Tap on App Info icon on the resulting popup",
+                    "3. Tap on Permissions",
+                    "4. Grant Camera and Microphone permissions",
+                    "5. Restart the app",
+                    "6. Enjoy!"
+                ).forEach { stepText ->
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = stepText,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.align(Alignment.Start)
+                    )
+                }
+            }
+        }
+    }
+}
+
+
