@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.FileProvider
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -175,7 +176,9 @@ fun BoxScope.HandleRecordingButton(
     IconButton(
         onClick = {
             if (!recordingStarted.value) {
-                startRecording(context, navController, states)
+                startRecording(context, navController, states) { uri ->
+                    createShareIntent(context, uri)
+                }
             } else {
                 stopRecording(states.recordingStarted, states.recording)
             }
@@ -197,7 +200,10 @@ fun BoxScope.HandleRecordingButton(
     }
 }
 
-fun startRecording(context: Context, navController: NavController, states: States) {
+fun startRecording(
+    context: Context, navController: NavController, states: States,
+    onVideoSaved: (Uri) -> Unit
+) {
     startStreaming()
     states.videoCapture.value?.let { videoCapture ->
         states.recordingStarted.value = true
@@ -221,6 +227,7 @@ fun startRecording(context: Context, navController: NavController, states: State
                         StandardCharsets.UTF_8.toString()
                     )
                     navController.navigate("${Route.VIDEO_PREVIEW}/$uriEncoded")
+                    onVideoSaved(uri)
                 }
             }
         }
@@ -236,7 +243,12 @@ fun stopRecording(recordingStarted: MutableState<Boolean>, recording: Recording?
 fun createShareIntent(context: Context, uri: Uri) {
     val shareIntent = Intent(Intent.ACTION_SEND).apply {
         type = "video/*"
-        putExtra(Intent.EXTRA_STREAM, uri)
+        val contentUri = FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.fileprovider",
+            File(uri.path!!)
+        )
+        putExtra(Intent.EXTRA_STREAM, contentUri)
         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
     context.startActivity(
