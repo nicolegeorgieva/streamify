@@ -8,7 +8,7 @@ import androidx.compose.runtime.setValue
 import com.pedro.rtmp.rtmp.RtmpClient
 import com.pedro.rtmp.utils.ConnectCheckerRtmp
 
-private const val STREAMING_URL = "rtmp://a.rtmp.youtube.com/live2/"
+private const val STREAMING_URL = "rtmp://a.rtmp.youtube.com/live2/0qcu-bpqb-23sr-p0a4-0q12"
 
 var streamingStarted by mutableStateOf(false)
 
