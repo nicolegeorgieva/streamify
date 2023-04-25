@@ -57,7 +57,7 @@ fun VideoCaptureScreen(
     RequestPermissions(permissionState)
 
     // 4. Create video capture use case when the effect is launched
-    createVideoCaptureUseCase(
+    CreateVideoCaptureUseCase(
         context,
         lifecycleOwner,
         states.previewView,
@@ -148,7 +148,7 @@ fun RequestPermissions(permissionState: MultiplePermissionsState) {
 
 // 4. Create video capture use case when the effect is launched
 @Composable
-fun createVideoCaptureUseCase(
+fun CreateVideoCaptureUseCase(
     context: Context,
     lifecycleOwner: LifecycleOwner,
     previewView: PreviewView,
