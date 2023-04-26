@@ -5,9 +5,10 @@
 ## Technologies:
 
 - Jetpack Compose
-- Accompanist Permissions
-- CameraX
-- ExoPlayer
+- Accompanist Permissions (Video capture screen)
+- CameraX (Camera & Video Capture)
+- ExoPlayer (Video preview screen)
+- PedroSG94 (RTMP streaming)
 
 ### Sources:
 
