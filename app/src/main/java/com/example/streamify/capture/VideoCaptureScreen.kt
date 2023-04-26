@@ -1,4 +1,4 @@
-package com.example.streamify
+package com.example.streamify.capture
 
 import android.Manifest
 import android.content.Context
@@ -29,6 +29,8 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import com.example.streamify.R
+import com.example.streamify.Route
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.PermissionsRequired

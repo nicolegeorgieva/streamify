@@ -13,7 +13,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.streamify.Route.VIDEO_PREVIEW_ARG
-import com.example.streamify.ui.theme.StreamifyTheme
+import com.example.streamify.capture.VideoCaptureScreen
+import com.example.streamify.capture.createShareIntent
+import com.example.streamify.preview.VideoPreviewScreen
+import com.example.streamify.theme.StreamifyTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,4 +1,4 @@
-package com.example.streamify.ui.theme
+package com.example.streamify.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

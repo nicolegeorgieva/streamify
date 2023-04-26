@@ -1,4 +1,4 @@
-package com.example.streamify
+package com.example.streamify.capture
 
 
 import android.util.Log

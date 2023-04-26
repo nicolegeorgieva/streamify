@@ -1,4 +1,4 @@
-package com.example.streamify.ui.theme
+package com.example.streamify.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes
