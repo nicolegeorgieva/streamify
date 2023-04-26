@@ -91,13 +91,11 @@ fun VideoCaptureScreen(
             HandleCameraSwitchButton(context, lifecycleOwner, states, states.recordingStarted)
 
             if (streamingStarted) {
-                Box(
+                LiveStreamingIndicator(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .align(Alignment.TopEnd)
                         .padding(16.dp)
-                ) {
-                    LiveStreamingIndicator(modifier = Modifier.align(Alignment.TopEnd))
-                }
+                )
             }
         }
     }
@@ -445,9 +443,8 @@ fun PermissionsNotAvailableScreen() {
 fun LiveStreamingIndicator(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .height(32.dp)
-            .width(68.dp)
             .background(Color.Red)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Text(
             text = stringResource(R.string.live_streaming_indicator),
