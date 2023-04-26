@@ -4,6 +4,7 @@
 
 ## Technologies:
 
+- Kotlin
 - Jetpack Compose
 - Accompanist Permissions (Video capture screen)
 - CameraX (Camera & Video Capture)
