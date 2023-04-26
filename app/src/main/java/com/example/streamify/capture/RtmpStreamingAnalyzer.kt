@@ -11,20 +11,14 @@ class RtmpStreamingAnalyzer(private val rtmpClient: RtmpClient) : ImageAnalysis.
 
     override fun analyze(image: ImageProxy) {
         if (rtmpClient.isStreaming) {
-            imageProxyToH264(image).let { bytes ->
-                val presentationTimeUs = image.imageInfo.timestamp / 1000
-                val bufferInfo = MediaCodec.BufferInfo()
-                bufferInfo.presentationTimeUs = presentationTimeUs
-                bufferInfo.flags = MediaCodec.BUFFER_FLAG_KEY_FRAME
-
-                rtmpClient.sendVideo(ByteBuffer.wrap(bytes), bufferInfo)
-            }
+            val (h264bytes, bufferInfo) = imageProxyToH264(image)
+            // TODO: Fix the h264 encoding
+            rtmpClient.sendVideo(ByteBuffer.wrap(h264bytes), bufferInfo)
         }
     }
 }
 
-
-fun imageProxyToH264(image: ImageProxy): ByteArray {
+fun imageProxyToH264(image: ImageProxy): Pair<ByteArray, MediaCodec.BufferInfo> {
     // Get the image planes
     val yBuffer = image.planes[0].buffer
     val uBuffer = image.planes[1].buffer
@@ -73,7 +67,7 @@ fun imageProxyToH264(image: ImageProxy): ByteArray {
             outputBuffer.get(data)
             encoder.releaseOutputBuffer(outputBufferIndex, false)
             if (data.isNotEmpty()) {
-                return data
+                return data to bufferInfo
             }
         }
     }
